@@ -21,7 +21,7 @@ class MyApp(ShowBase):
         self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
 
         # Load and transform the panda actor.
-        self.actor = Actor("output.bam")
+        self.actor = Actor("boy.bam")
         # self.actor.setScale(0.005, 0.005, 0.005)
         self.actor.setPos(0, 0, 0)
         self.actor.reparentTo(self.render)

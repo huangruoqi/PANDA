@@ -21,13 +21,13 @@ class MyApp(ShowBase):
         self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
 
         # Load and transform the panda actor.
-        self.pandaActor = Actor("models/panda-model")
-        self.pandaActor.setScale(0.005, 0.005, 0.005)
-        self.pandaActor.setPos(0, 0, 0)
-        self.pandaActor.reparentTo(self.render)
+        self.actor = Actor("output.bam")
+        # self.actor.setScale(0.005, 0.005, 0.005)
+        self.actor.setPos(0, 0, 0)
+        self.actor.reparentTo(self.render)
         # Loop its animation.
-        self.pandaActor.listJoints()
-        self.dummy = self.pandaActor.controlJoint(None, "modelRoot", "Dummy_hips")
+        self.actor.listJoints()
+        self.dummy = self.actor.controlJoint(None, "modelRoot", "mixamorig6:Neck")
 
 
     # Define a procedure to move the camera.

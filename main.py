@@ -8,10 +8,13 @@ from panda3d.core import Vec4
 from mapping import name_mapping, index_mapping
 import cv2
 import mediapipe as mp
-import numpy as np
 
 mp_pose = mp.solutions.pose
-
+'''
+    xs=[-landmark.z],
+    ys=[landmark.x],
+    zs=[-landmark.y],
+'''
 
 class MyApp(ShowBase):
     def __init__(self):
@@ -41,27 +44,31 @@ class MyApp(ShowBase):
         self.scene.setPos(-8, 42, 0)
         # Add the spinCameraTask procedure to the task manager.
         self.taskMgr.add(self.animateTask, "animateTask")
-        self.taskMgr.add(self.videoTask, "videoTask")
+        # self.taskMgr.add(self.videoTask, "videoTask")
 
 
         # Load and transform the panda actor.
-        self.actor = Actor("police.bam")
+        self.actor = Actor("person.bam")
         # self.actor.setScale(0.005, 0.005, 0.005)
-        self.actor.setScale(10)
+        self.actor.setScale(3)
 
         self.actor.setPos(0, 0, 0)
-        self.actor.setHpr(10, -90, 0)
+        self.actor.setHpr(180, 0, 0)
         self.actor.reparentTo(self.render)
         # Loop its animation.
         self.actor.listJoints()
         self.joints = {k:self.actor.controlJoint(None, "modelRoot", v) for k, v in name_mapping.items() }
 
+
     # Define a procedure to move the camera.
     def animateTask(self, task):
-        self.camera.setPos(20 * sin(0), -20 * cos(0), 3)
-        if self.landmark is None: return Task.cont
-        self.solve_face_rotation()
-        self.solve_shoulder_rotation()
+        angle = pi/2
+        angle = 0
+        self.camera.setPos(20 * sin(angle), -20 * cos(angle), 6)
+        self.camera.lookAt(0, 0, 2)
+        # if self.landmark is None: return Task.cont
+        # self.solve_face_rotation()
+        # self.solve_shoulder_rotation(task)
         return Task.cont
 
     def videoTask(self, task):
@@ -86,27 +93,25 @@ class MyApp(ShowBase):
         faceJoint = self.joints["Face"]
         faceJoint.setHpr(0, 0, angle)
 
-    def solve_shoulder_rotation(self):
-        sl = self.landmark[index_mapping["ShoulderL"]]
-        sr = self.landmark[index_mapping["ShoulderR"]]
-        el = self.landmark[index_mapping["ElbowL"]]
-        er = self.landmark[index_mapping["ElbowR"]]
-        dl = self.get_direction(sl, el)
-        dr = self.get_direction(sr, er)
+    def solve_shoulder_rotation(self, task):
+        # sl = self.landmark[index_mapping["ShoulderL"]]
+        # el = self.landmark[index_mapping["ElbowL"]]
         slJoint = self.joints["ShoulderL"]
+        # slJoint.setH(90)
+        elJoint = self.joints["ElbowL"]
+        elJoint.setHpr(0,0,0)
+
+
+
+
+
+
+        # sr = self.landmark[index_mapping["ShoulderR"]]
+        # er = self.landmark[index_mapping["ElbowR"]]
         srJoint = self.joints["ShoulderR"]
-        self.look_at(slJoint, dl)
-        # self.look_at(srJoint, dr)
-        slJoint.setHpr(slHpr.x, slHpr.y+90, slHpr.z)
-        # srJoint.setHpr(-srHpr.x-90, 0, 0)
 
-    def get_direction(self, l1, l2):
-        return (l2.x - l1.x, l2.z-l1.z, l2.y-l1.y)
 
-    def look_at(self, joint, direction):
-        pos = joint.getPos()
-        joint.lookAt(pos.x + direction[0], pos.y + direction[1], pos.z + direction[2])
-    
+
     def close(self):
         self.cap.release()
         self.pose.close()

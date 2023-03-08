@@ -154,7 +154,7 @@ class RiggedChar():
 
         if self.landmark:
                 self.hand_target_left.set_pos(*convert(self.landmark[index_mapping["HandL"]]))
-        self.hand_target_right.set_pos(0, 1, 0)
+                self.hand_target_right.set_pos(*convert(self.landmark[index_mapping["HandR"]]))
 
         self.ik_chain_arm_left.update_ik()
         self.ik_chain_arm_right.update_ik()
